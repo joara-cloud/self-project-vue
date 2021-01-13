@@ -12,12 +12,12 @@
 			<label for="">파일첨부</label>
 			<input type="file">
 		</div>
-		<button type="submit" class="btn_ty01 c2">확인</button>
+		<button type="submit" class="btn_ty01">확인</button>
 	</form>
 </template>
 
 <script>
-import axios from 'axios';
+import bus from '@/utils/bus.js';
 
 export default {
 	data() {
@@ -27,20 +27,23 @@ export default {
 		}
 	},
 	methods: {
-		submitForm() {
-			axios({
-				method: 'post',
-				url: 'http://localhost:3000/posts/create',
-				data: {
-					subject: this.subject,
-					content: this.content
-				}
-			}).then((response) => {
-				console.log('sucess: ');
-				console.log(response);
-			}).catch((error) => {
-				console.log('catch: '+error);
-			})
+		async submitForm() {
+			console.log('submitform 요청함');
+			try {
+				var response = await this.$http({
+					method: 'post',
+					url: '/posts/create',
+					data: {
+						subject: this.subject,
+						content: this.content
+					}
+				});
+				bus.$emit('show:toast', response.data.msg)
+				this.$router.push('/board/list');
+			} catch(errer) {
+				console.log('submitform method error : ' + errer);
+			}
+
 		}
 	}
 }
