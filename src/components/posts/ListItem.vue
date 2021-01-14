@@ -33,8 +33,12 @@ export default {
 		return {
 			subject: '',
 			content: '',
-			posts: []
+			posts: [],
+			listNum: 0,
 		}
+	},
+	methods: {
+
 	},
 	created() {
 		this.$http({
@@ -42,7 +46,7 @@ export default {
 			url: '/posts'
 		}).then(({data}) => {
 			console.log('get posts success!');
-			console.log(data.posts);
+			// console.log(data.posts);
 			// this.subject = data.posts.subject;
 			// this.content = data.posts.content;
 			this.posts = data.posts;
