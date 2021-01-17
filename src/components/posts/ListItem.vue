@@ -50,6 +50,7 @@ export default {
 			// this.subject = data.posts.subject;
 			// this.content = data.posts.content;
 			this.posts = data.posts;
+			console.dir(data.posts);
 		}).catch(function(err) {
 			console.log('catch : ', err);
 		})
