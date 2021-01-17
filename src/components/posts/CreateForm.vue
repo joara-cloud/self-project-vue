@@ -35,19 +35,34 @@ export default {
 			try {
 
 				// upload file
-				const fd = new FormData();
-				fd.append('uploadImage', this.uploadImageFile); // 지정해준 key값으로 node.js에서 upload.single('upLoadImage') 이런식으로 받게 됨
+				const formData = new FormData(); // formdata에 추가했을 경우 백엔드에서 받을때, 파일 형식만 자동으로 req.file로 분류되고 나머지는 req.body에 저장
+				formData.append('uploadImage', this.uploadImageFile); // 지정해준 key값으로 node.js에서 upload.single('upLoadImage') 이런식으로 받게 됨
+				formData.append('subject', this.subject);
+				formData.append('content', this.content);
+
+				console.log(formData);
 				
-				var response = await this.$http({
-					method: 'post',
-					url: '/posts/create',
-					data: {
-						subject: this.subject,
-						content: this.content
+				// var response = await this.$http({
+				// 	method: 'post',
+				// 	url: '/posts/create',
+				// 	data: {
+				// 		subject: this.subject,
+				// 		content: this.content
+				// 	},
+				// 	fd
+				// });
+
+				for (let key of formData.entries()){ 
+					console.log(key[0] + ' '+key[1]) 
+					}
+
+				var response = await this.$http.post('/posts/create',formData, {
+					headers: {
+						'Content-Type': 'application/json'
 					}
 				});
 				bus.$emit('show:toast', response.data.msg)
-				this.$router.push('/board/list');
+				// this.$router.push('/board/list');
 			} catch(errer) {
 				console.log('submitform method error : ' + errer);
 			}
@@ -68,15 +83,13 @@ export default {
 			var vm = this;
 
 			reader.onload = (e) => { // FileReader에서 전달 받은 파일을 읽기 성공하면 load EventListener에 등록한 function이 호출된다.
-				console.log(vm.image = e.target);
 				vm.image = e.target.result;
 			}
-			console.log(file);
 			reader.readAsDataURL(file); // 파일 전달 방식 4가지 중 하나
 			// reader.readAsText(file); 
 		},
 		uploadFile() {
-			this.uploadImageFile = this.$refs.uploadImageFile.file[0];
+			this.uploadImageFile = this.$refs.uploadImageFile.files[0];
 		}
 	}
 }

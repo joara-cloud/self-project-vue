@@ -4,7 +4,7 @@
 			<li v-for="(post, index) in posts" :key="index">
 				<router-link to="/board/view">
 					<div class="thumb">
-						<img src="https://images.microcms-assets.io/protected/ap-northeast-1:6e79cea0-bbd1-4e28-96ec-2f1e846dcbd1/service/snaqme/media/eye%20catch%20new.png?fit=crop&amp;w=500&amp;h=500" alt="">
+						<img src="@/assets/images/temp.png" alt="">
 					</div>
 					<div class="info">
 						<h4 class="post_subject">{{post.subject}}</h4>
