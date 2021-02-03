@@ -1,5 +1,5 @@
 <template>
-	<div id="content">
+	<div id="content" class="memo_wrap">
 		<memo-list></memo-list>
 	</div>
 </template>
@@ -15,5 +15,6 @@ export default {
 </script>
 
 <style>
+.memo_wrap {min-height:50vh;background: -webkit-gradient(linear, left top, left bottom, from(#3EB9DE), to(#3A80DE));background: linear-gradient(#3EB9DE, #3A80DE)}
 
 </style>

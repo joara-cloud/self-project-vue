@@ -32,7 +32,13 @@ var routes = [
   },
   {
     path: '/memo',
-    component: () => import('@/views/memo/List.vue')
+    component: () => import('@/views/memo/List.vue'),
+    children: [
+      {
+        path: 'card/:id',
+        component: () => import('@/components/memo/CardPopup.vue')
+      }
+    ]
   },
   {
     path: '/login',
