@@ -1,13 +1,14 @@
 <template>
 	<div class="memo_list_wrap">
-		<a href="" id="addCard" class="memo_section">+ Add Card</a>
 		<div class="memo_section">
 			<h3>Doing</h3>
 			<ul id="memoList" class="memo_list">
 				<li>
 					<input type="text" value="1메모내용입니다." readonly>
 					<div class="icon">
-						<svg height="10" viewBox="0 0 16 10" width="16" xmlns="http://www.w3.org/2000/svg"> <path d="m1 0h14c.5522847 0 1 .44771525 1 1s-.4477153 1-1 1h-14c-.55228475 0-1-.44771525-1-1s.44771525-1 1-1zm0 4h14c.5522847 0 1 .44771525 1 1s-.4477153 1-1 1h-14c-.55228475 0-1-.44771525-1-1s.44771525-1 1-1zm0 4h8c.55228475 0 1 .44771525 1 1s-.44771525 1-1 1h-8c-.55228475 0-1-.44771525-1-1s.44771525-1 1-1z" fill="#30364c" fill-rule="evenodd" opacity=".3"></path></svg>
+						<svg height="10" viewBox="0 0 16 10" width="16" xmlns="http://www.w3.org/2000/svg"> 
+							<path d="m1 0h14c.5522847 0 1 .44771525 1 1s-.4477153 1-1 1h-14c-.55228475 0-1-.44771525-1-1s.44771525-1 1-1zm0 4h14c.5522847 0 1 .44771525 1 1s-.4477153 1-1 1h-14c-.55228475 0-1-.44771525-1-1s.44771525-1 1-1zm0 4h8c.55228475 0 1 .44771525 1 1s-.44771525 1-1 1h-8c-.55228475 0-1-.44771525-1-1s.44771525-1 1-1z" fill="#30364c" fill-rule="evenodd" opacity=".3"></path>
+						</svg>
 					</div>
 					<button type="button" class="memo_delete">&times;</button>
 				</li>
@@ -32,6 +33,8 @@
 				</li>
 			</ul>
 		</div>
+		<!-- <router-link to="/card/1" id="addCard" class="memo_section" v-on:click.prevent="$emit('dhow')">+ Add Card</router-link> -->
+		<a href="" id="addCard" class="memo_section" v-on:click.prevent="$emit('dhow')">+ Add Card</a>
 	</div>
 </template>
 

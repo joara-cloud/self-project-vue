@@ -1,5 +1,5 @@
 /* layout */
-body, p, a, textarea, input {font-family: 'Noto Sans KR', sans-serif;}
+body, p, a, textarea, input, button {font-family: 'Noto Sans KR', sans-serif;}
 #content {padding:150px 0 100px}
 .inner {max-width:1170px;width:100%;margin:0 auto}
 
@@ -19,3 +19,6 @@ body, p, a, textarea, input {font-family: 'Noto Sans KR', sans-serif;}
 .form_ty01 .row {margin:20px 0 0}
 .form_ty01 .row:first-child {margin:0}
 .form_ty01 button[type="submit"] {margin-top:40px}
+
+/* text */
+.text-right {text-align:right}
