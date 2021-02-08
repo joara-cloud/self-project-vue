@@ -2,8 +2,9 @@
 	<div class="memo_list_wrap">
 		<div class="memo_section">
 			<h3>Doing</h3>
+			{{memoPosts}}
 			<ul id="memoList" class="memo_list">
-				<li>
+				<!-- <li>
 					<input type="text" value="1메모내용입니다." readonly>
 					<div class="icon">
 						<svg height="10" viewBox="0 0 16 10" width="16" xmlns="http://www.w3.org/2000/svg"> 
@@ -11,25 +12,12 @@
 						</svg>
 					</div>
 					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li>
-					<input type="text" value="2메모내용입니다." readonly>
+				</li> -->
+				<li v-for="(index, memoPost) in memoPosts" v-bind:key="index">
+					posts post : {{memoPosts[0]}}
+					posts post : {{memoPosts[0].subject}}
+					<input type="text" :value="memoPost[0].subject" readonly>
 					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li>
-					<input type="text" value="3메모내용입니다." readonly>
-					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li>
-					<input type="text" value="4메모내용입니다." readonly>
-					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li>
-					<input type="text" value="5메모내용입니다." readonly>
-					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li class="add_list">
-					<a href="" v-on:click.prevent="addList">+ Add list</a>
 				</li>
 			</ul>
 		</div>
@@ -46,7 +34,21 @@ export default {
 	data() {
 		return {
 			dragulaCard: '',
+			memoPosts: []
 		}
+	},
+	created() {
+		this.$http({
+			method: 'post',
+			url: '/memo/fetch'
+		})
+		.then(({data}) => {
+			console.log(data.rows);
+			this.memoPosts = data.rows;
+		})
+		.catch(function(err) {
+			console.log(err);
+		})
 	},
 	mounted() {
 		this.dragulaCard = dragula([
