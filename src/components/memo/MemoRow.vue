@@ -2,8 +2,9 @@
 	<div class="memo_list_wrap">
 		<div class="memo_section">
 			<h3>Doing</h3>
+			{{rowData}}
 			<ul id="memoList" class="memo_list">
-				<li>
+				<!-- <li>
 					<input type="text" value="1메모내용입니다." readonly>
 					<div class="icon">
 						<svg height="10" viewBox="0 0 16 10" width="16" xmlns="http://www.w3.org/2000/svg"> 
@@ -11,42 +12,52 @@
 						</svg>
 					</div>
 					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li>
-					<input type="text" value="2메모내용입니다." readonly>
-					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li>
-					<input type="text" value="3메모내용입니다." readonly>
-					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li>
-					<input type="text" value="4메모내용입니다." readonly>
-					<button type="button" class="memo_delete">&times;</button>
-				</li>
-				<li>
-					<input type="text" value="5메모내용입니다." readonly>
+				</li> -->
+				<li v-for="(row, index) in rowData" v-bind:key="index">
+					<input type="text" :value="row.subject" readonly>
 					<button type="button" class="memo_delete">&times;</button>
 				</li>
 				<li class="add_list">
-					<a href="" v-on:click.prevent="addList">+ Add list</a>
+					<a href="" v-on:click.prevent="$emit('dhow')">+ Add list</a>
 				</li>
 			</ul>
 		</div>
 		<!-- <router-link to="/card/1" id="addCard" class="memo_section" v-on:click.prevent="$emit('dhow')">+ Add Card</router-link> -->
-		<a href="" id="addCard" class="memo_section" v-on:click.prevent="$emit('dhow')">+ Add Card</a>
+		<a href="" id="addCard" class="memo_section">+ Add Card</a>
 	</div>
 </template>
 
 <script>
 import dragula from 'dragula';
 import 'dragula/dist/dragula.css';
+import Bus from '@/utils/bus.js'
 
 export default {
 	data() {
 		return {
 			dragulaCard: '',
+			rowData: []
 		}
+	},
+	methods: {
+		addList() {
+			console.log('add list');
+		},
+		fetchList() {
+			console.log('asjidfojosdf');
+			this.$http({
+				method: 'post',
+				url: '/memo/fetch'
+			})
+			.then(({data}) => {
+				console.log('api 요청함');
+				this.rowData = data.rows;
+			})
+		}
+	},
+	created() {
+		this.fetchList();
+		Bus.$on('onFetch', this.fetchList);
 	},
 	mounted() {
 		this.dragulaCard = dragula([
@@ -55,11 +66,7 @@ export default {
 			console.log(el);
 		})
 	},
-	methods: {
-		addList() {
-			console.log('add list');
-		}
-	}
+
 
 }
 </script>
