@@ -2,7 +2,6 @@
 	<div class="memo_list_wrap">
 		<div class="memo_section">
 			<h3>Doing</h3>
-			{{rowData}}
 			<ul id="memoList" class="memo_list">
 				<!-- <li>
 					<input type="text" value="1메모내용입니다." readonly>
@@ -14,8 +13,9 @@
 					<button type="button" class="memo_delete">&times;</button>
 				</li> -->
 				<li v-for="(row, index) in rowData" v-bind:key="index">
+					<!-- text -->
 					<input type="text" :value="row.subject" readonly>
-					<button type="button" class="memo_delete">&times;</button>
+					<button type="button" class="memo_delete aaaa" @click="deleteList(row.idx)">&times;</button>
 				</li>
 				<li class="add_list">
 					<a href="" v-on:click.prevent="$emit('dhow')">+ Add list</a>
@@ -53,6 +53,26 @@ export default {
 				console.log('api 요청함');
 				this.rowData = data.rows;
 			})
+		},
+		deleteList(id) {
+			console.log(id);
+			const vm = this;
+
+			if(!window.confirm('해당 리스트를 삭제하시겠습니까?')) return;
+
+			this.$http({
+				method: 'delete',
+				url: '/memo/delete',
+				data: {
+					id
+				}
+			})
+			.then(function() {
+				vm.fetchList();
+			})
+			.catch(function(err) {
+				console.log(err);
+			})
 		}
 	},
 	created() {
@@ -61,10 +81,12 @@ export default {
 	},
 	mounted() {
 		this.dragulaCard = dragula([
-			...Array.from(this.$el.querySelectorAll('#memoList')) // 유사배열이라 Array.from처리해줌 (배열로 넣기위해)
+			// ...Array.from(this.$el.querySelectorAll('#memoList')) // 유사배열이라 Array.from처리해줌 (배열로 넣기위해)
+			document.getElementById('memoList')
 		]).on('drop', (el) => { // wrapper, target, siblings
 			console.log(el);
 		})
+		// dragula([document.getElementById(container)]);
 	},
 
 
@@ -76,7 +98,7 @@ export default {
 .memo_list {}
 .memo_list > li {position:relative;margin-top:8px;padding:12px 10px;border-radius:4px;font-size:14px;background-color:#fff}
 .memo_list > li:first-child {margin-top:0}
-.memo_list > li > input {border:0;outline:none}
+.memo_list > li > input {border:0;outline:none;cursor:pointer}
 .memo_list .add_list {background-color:#a5c1de;}
 .memo_list .add_list a {display:block}
 .memo_list .memo_delete {position:absolute;right:5px;top:9px;width:24px;font-size:24px;line-height:1;background:none}

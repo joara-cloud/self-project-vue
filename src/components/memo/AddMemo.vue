@@ -9,7 +9,7 @@
 			<textarea name="" id="" cols="30" rows="10" placeholder="내용을 입력해주세요." v-model="content"></textarea>
 		</div>
 		<div slot="footer" class="text-right">
-			<button class="modal-default-button" v-on:click="[$emit('close'), clickevnet()]">저장</button>
+			<button class="modal-default-button" v-on:click="[$emit('close'), submitMemoList()]">저장</button>
 		</div>
 	</card-popup>
 </template>
@@ -30,7 +30,7 @@ export default {
 		}
 	},
 	methods: {
-		clickevnet() {
+		submitMemoList() {
 			// API (insert)
 			this.$http({
 				method: 'post',

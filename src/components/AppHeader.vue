@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style>
-#header {position:fixed;left:0;right:0;top:0;padding:0 50px;/*background-color:#fff*/}
+#header {position:fixed;left:0;right:0;top:0;z-index:10;padding:0 50px;/*background-color:#fff*/}
 #header .h_content {display:flex;padding:54px 0;justify-content:space-between;align-items:center}
 #header .h_content h1 {display:block;width:45px;height:45px;border:2px solid #797979;border-radius:4px;text-align:center;font-weight:900;font-size:22px}
 #header .h_content h1 a {display:block;line-height:45px;color:#202020;/*background-color:#fff*/}
