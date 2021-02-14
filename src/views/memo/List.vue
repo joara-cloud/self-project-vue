@@ -1,27 +1,27 @@
 <template>
 	<div id="content" class="memo_wrap">
-		<memo-list v-on:dhow="addboard"></memo-list>
-		<add-memo v-if="isAddboard" v-on:close="isAddboard=false"></add-memo>
+		<memo-row v-on:dhow="addMemo"></memo-row>
+		<add-memo v-if="isAddMemo" v-on:close="isAddMemo=false"></add-memo>
 	</div>
 </template>
 
 <script>
-import MemoList from '@/components/memo/MemoList.vue';
+import MemoRow from '@/components/memo/MemoRow.vue';
 import AddMemo from '@/components/memo/AddMemo.vue';
 
 export default {
 	data() {
 		return {
-			isAddboard: false
+			isAddMemo: false
 		}
 	},
 	components: {
-		MemoList,
+		MemoRow,
 		AddMemo
 	},
 	methods: {
-		addboard() {
-			this.isAddboard = true;
+		addMemo() {
+			this.isAddMemo = true;
 		}
 	}
 
