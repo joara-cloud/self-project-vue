@@ -12,7 +12,7 @@ import AddMemo from '@/components/memo/AddMemo.vue';
 export default {
 	data() {
 		return {
-			isAddMemo: false
+			isAddMemo: false,
 		}
 	},
 	components: {
@@ -23,6 +23,9 @@ export default {
 		addMemo() {
 			this.isAddMemo = true;
 		}
+	},
+	created() {
+
 	}
 
 }

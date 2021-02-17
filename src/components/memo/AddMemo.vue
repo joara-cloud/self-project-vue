@@ -26,37 +26,18 @@ export default {
 		return {
 			showModal: false,
 			subject: '',
-<<<<<<< HEAD
-			content: '',
-			post: 6355
-		}
-	},
-	methods: {
-		clickevnet() {
-=======
 			content: ''
 		}
 	},
 	methods: {
 		submitMemoList() {
 			// API (insert)
->>>>>>> a181dab55bf97e00bddd65ff71d9d06816678435
 			this.$http({
 				method: 'post',
 				url: '/memo/create',
 				data: {
 					subject: this.subject,
 					content: this.content,
-<<<<<<< HEAD
-					pos: 6355
-				}
-			})
-			.then(function() {
-				console.log('success then!');
-			})
-			.catch(function(e) {
-				console.log('catch error', e);
-=======
 					pos: 65335
 				}
 			})
@@ -66,7 +47,6 @@ export default {
 			})
 			.catch(function(err) {
 				console.log('메모 추가 중 에러 : ', err);
->>>>>>> a181dab55bf97e00bddd65ff71d9d06816678435
 			})
 		}
 	}

@@ -13,27 +13,20 @@
 					</div>
 					<button type="button" class="memo_delete">&times;</button>
 				</li> -->
-<<<<<<< HEAD:src/components/memo/MemoList.vue
-				<li v-for="(index, memoPost) in memoPosts" v-bind:key="index">
-					posts post : {{memoPosts[0]}}
-					posts post : {{memoPosts[0].subject}}
-					<input type="text" :value="memoPost[0].subject" readonly>
-					<button type="button" class="memo_delete">&times;</button>
-				</li>
-=======
 				<li v-for="(row, index) in rowData" v-bind:key="index">
-					<!-- text -->
-					<input type="text" :value="row.subject" readonly>
-					<button type="button" class="memo_delete aaaa" @click="deleteList(row.idx)">&times;</button>
+					<div :data-idx="row.idx">
+						<input type="text" :value="row.subject" readonly>
+						<button type="button" class="memo_delete" @click="deleteList(row.idx)">&times;</button>
+					</div>
 				</li>
 				<li class="add_list">
 					<a href="" v-on:click.prevent="$emit('dhow')">+ Add list</a>
 				</li>
->>>>>>> a181dab55bf97e00bddd65ff71d9d06816678435:src/components/memo/MemoRow.vue
 			</ul>
 		</div>
 		<!-- <router-link to="/card/1" id="addCard" class="memo_section" v-on:click.prevent="$emit('dhow')">+ Add Card</router-link> -->
 		<a href="" id="addCard" class="memo_section">+ Add Card</a>
+		<div class="dim" v-if="isLoading">loading...</div>
 	</div>
 </template>
 
@@ -46,24 +39,8 @@ export default {
 	data() {
 		return {
 			dragulaCard: '',
-<<<<<<< HEAD:src/components/memo/MemoList.vue
-			memoPosts: []
-		}
-	},
-	created() {
-		this.$http({
-			method: 'post',
-			url: '/memo/fetch'
-		})
-		.then(({data}) => {
-			console.log(data.rows);
-			this.memoPosts = data.rows;
-		})
-		.catch(function(err) {
-			console.log(err);
-		})
-=======
-			rowData: []
+			rowData: [],
+			isLoading: true
 		}
 	},
 	methods: {
@@ -79,6 +56,7 @@ export default {
 			.then(({data}) => {
 				console.log('api 요청함');
 				this.rowData = data.rows;
+				this.isLoading = false;
 			})
 		},
 		deleteList(id) {
@@ -95,6 +73,7 @@ export default {
 				}
 			})
 			.then(function() {
+				console.log('삭제됨');
 				vm.fetchList();
 			})
 			.catch(function(err) {
@@ -105,14 +84,23 @@ export default {
 	created() {
 		this.fetchList();
 		Bus.$on('onFetch', this.fetchList);
->>>>>>> a181dab55bf97e00bddd65ff71d9d06816678435:src/components/memo/MemoRow.vue
+		
 	},
 	mounted() {
 		this.dragulaCard = dragula([
 			// ...Array.from(this.$el.querySelectorAll('#memoList')) // 유사배열이라 Array.from처리해줌 (배열로 넣기위해)
 			document.getElementById('memoList')
-		]).on('drop', (el) => { // wrapper, target, siblings
-			console.log(el);
+		]).on('drop', (el) => { // el, wrapper, target, siblings
+
+			console.dir(el.children[0].dataset.idx);
+
+			// this.$http({
+			// 	method: 'post',
+			// 	url: '',
+			// 	data: {
+
+			// 	}
+			// })
 		})
 		// dragula([document.getElementById(container)]);
 	},
@@ -126,7 +114,7 @@ export default {
 .memo_list {}
 .memo_list > li {position:relative;margin-top:8px;padding:12px 10px;border-radius:4px;font-size:14px;background-color:#fff}
 .memo_list > li:first-child {margin-top:0}
-.memo_list > li > input {border:0;outline:none;cursor:pointer}
+.memo_list > li input {border:0;outline:none;cursor:pointer}
 .memo_list .add_list {background-color:#a5c1de;}
 .memo_list .add_list a {display:block}
 .memo_list .memo_delete {position:absolute;right:5px;top:9px;width:24px;font-size:24px;line-height:1;background:none}
@@ -134,4 +122,14 @@ export default {
 .memo_section {width:250px;margin-left:20px;padding:15px;border-radius:6px;background-color:#E5EFF5}
 .memo_section:first-child {margin-left:0}
 .memo_section h3 {padding:0 0 10px;font-size:16px}
+.dim {display:flex;position:fixed;left:0;top:0;width:100%;height:100%;color:#fff;background:rgba(0, 0, 0, 0.3);justify-content:center;align-items:center}
+
+/* drag */
+.gu-mirror {position:relative;margin-top:8px;padding:12px 10px;border-radius:4px;box-sizing:border-box;font-size:14px;background-color:#fff;transform:rotate(5deg)}
+.gu-mirror:first-child {margin-top:0}
+.gu-mirror input {border:0;outline:none;cursor:pointer}
+.gu-mirror .add_list {background-color:#a5c1de;}
+.gu-mirror .add_list a {display:block}
+.gu-mirror .memo_delete {position:absolute;right:5px;top:9px;width:24px;font-size:24px;line-height:1;background:none}
+.gu-mirror .icon {margin:5px 0 0}
 </style>
