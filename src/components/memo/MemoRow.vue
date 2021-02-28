@@ -14,7 +14,7 @@
 					<button type="button" class="memo_delete">&times;</button>
 				</li> -->
 				<li v-for="(row, index) in rowData" v-bind:key="index">
-					<div :data-idx="row.idx">
+					<div :data-idx="row.idx" :data-pos="row.pos">
 						<input type="text" :value="row.subject" readonly>
 						<button type="button" class="memo_delete" @click="deleteList(row.idx)">&times;</button>
 					</div>
@@ -54,7 +54,7 @@ export default {
 				url: '/memo/fetch'
 			})
 			.then(({data}) => {
-				console.log('api 요청함');
+				console.log('api 요청함', this.rowData);
 				this.rowData = data.rows;
 				this.isLoading = false;
 			})
@@ -92,15 +92,10 @@ export default {
 			document.getElementById('memoList')
 		]).on('drop', (el) => { // el, wrapper, target, siblings
 
-			console.dir(el.children[0].dataset.idx);
+			const cardIdx = el.children[0].dataset.idx;
+			const prevCard = cardIdx > 0 ? '첫 번쨰 아님' : '첫 번째임';
+			console.log(prevCard);
 
-			// this.$http({
-			// 	method: 'post',
-			// 	url: '',
-			// 	data: {
-
-			// 	}
-			// })
 		})
 		// dragula([document.getElementById(container)]);
 	},
