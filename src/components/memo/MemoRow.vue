@@ -13,7 +13,7 @@
 					</div>
 					<button type="button" class="memo_delete">&times;</button>
 				</li> -->
-				<li v-for="(row, index) in rowData" v-bind:key="index">
+				<li class="list_item" v-for="(row, index) in rowData" v-bind:key="index">
 					<div :data-idx="row.idx" :data-pos="row.pos">
 						<input type="text" :value="row.subject" readonly>
 						<button type="button" class="memo_delete" @click="deleteList(row.idx)">&times;</button>
@@ -92,10 +92,34 @@ export default {
 			document.getElementById('memoList')
 		]).on('drop', (el) => { // el, wrapper, target, siblings
 
-			const cardIdx = el.children[0].dataset.idx;
-			const prevCard = cardIdx > 0 ? '첫 번쨰 아님' : '첫 번째임';
-			console.log(prevCard);
+			const targetList = {
+				idx: el.firstElementChild.dataset.idx*1,
+				pos: el.firstElementChild.dataset.pos*1
+			};
 
+			// 순서 비교는 배열의 index값으로 할꺼임
+			Array.from(document.querySelectorAll('#memoList .list_item')).forEach((el, idx, arr) => { // 배열의 index로 target의 위치 확인
+				const cardId = el.firstElementChild.dataset.idx;
+				let prevList = null;
+				let nextList = null;
+				if(cardId == targetList.idx) {
+					prevList = idx > 0 ? {
+						idx: arr[idx-1].firstElementChild.dataset.idx*1,
+						pos: arr[idx-1].firstElementChild.dataset.pos*1
+					} : null;
+					nextList = idx < arr.length-1 ? {
+						idx: arr[idx+1].firstElementChild.dataset.idx*1,
+						pos: arr[idx+1].firstElementChild.dataset.pos*1
+					} : null;
+
+					if(!prevList && nextList) targetList.pos = nextList.pos / 2; // 첫 번째 자리
+					else if(!nextList && prevList) targetList.pos = prevList.pos * 2; //마지막 자리
+					else targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
+
+					console.log(targetList.pos);
+				}
+
+			})
 		})
 		// dragula([document.getElementById(container)]);
 	},
