@@ -87,6 +87,8 @@ export default {
 		
 	},
 	mounted() {
+		const vm = this;
+
 		this.dragulaCard = dragula([
 			// ...Array.from(this.$el.querySelectorAll('#memoList')) // 유사배열이라 Array.from처리해줌 (배열로 넣기위해)
 			document.getElementById('memoList')
@@ -116,7 +118,14 @@ export default {
 					else if(!nextList && prevList) targetList.pos = prevList.pos * 2; //마지막 자리
 					else targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
 
-					console.log(targetList.pos);
+					vm.$http({
+						method: 'PUT',
+						url: '/memo/update',
+						data: {
+							pos: targetList.pos,
+							idx: targetList.idx
+						}
+					})
 				}
 
 			})
