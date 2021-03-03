@@ -38,10 +38,13 @@
 			</ul>
 			<button type="button" class="crumb crumb__next">Next</button>
 		</div>
+		<Dim v-if="loading"></Dim>
 	</div>
 </template>
 
 <script>
+import Dim from '@/components/common/Dim.vue';
+
 export default {
 	data() {
 		return {
@@ -51,7 +54,11 @@ export default {
 			// listNum: 8, // 한 페이지당 DATA 개수 (초기 10개)
 			currentPage: 0, // 현재페이지
 			sortSelect: 8, // 정렬개수
+			loading: true
 		}
+	},
+	components: {
+		Dim
 	},
 	methods: {
 		test: function(page) {
@@ -68,17 +75,18 @@ export default {
 			this.posts = data.posts;
 			this.totalList = this.posts.length;
 
-
-			console.log(this.paging);
+			this.loading = false;
 		}).catch(function(err) {
 			console.log('catch : ', err);
 		})
 	},
 	computed: {
 		currentList() {
-			const start = this.currentPage * this.sortSelect;
-			const end = start + this.sortSelect;
+			const start = this.currentPage * this.sortSelect*1; // 페이지 넘어가는 문제 currentpage는 있음 [문제]
+			const end = start + this.sortSelect*1;
 
+			console.log('current page : ',this.currentPage);
+			console.log('start : ',start,'end : ',end);
 
 			return this.posts.slice(start, end);
 			// return this.sortSelect;
