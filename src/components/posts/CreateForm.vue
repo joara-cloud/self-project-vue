@@ -62,7 +62,7 @@ export default {
 					}
 				});
 				bus.$emit('show:toast', response.data.msg)
-				// this.$router.push('/board/list');
+				this.$router.push('/board/list');
 			} catch(errer) {
 				console.log('submitform method error : ' + errer);
 			}

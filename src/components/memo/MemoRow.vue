@@ -16,6 +16,7 @@
 				<li class="list_item" v-for="(row, index) in rowData" v-bind:key="index">
 					<div :data-idx="row.idx" :data-pos="row.pos">
 						<input type="text" :value="row.subject" readonly>
+						{{row.idx}}
 						<button type="button" class="memo_delete" @click="deleteList(row.idx)">&times;</button>
 					</div>
 				</li>
@@ -114,9 +115,22 @@ export default {
 						pos: arr[idx+1].firstElementChild.dataset.pos*1
 					} : null;
 
-					if(!prevList && nextList) targetList.pos = nextList.pos / 2; // 첫 번째 자리
-					else if(!nextList && prevList) targetList.pos = prevList.pos * 2; //마지막 자리
-					else targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
+					// if(!prevList && nextList) targetList.pos = nextList.pos / 2; // 첫 번째 자리
+					// else if(!nextList && prevList) targetList.pos = prevList.pos * 2; //마지막 자리
+					// else targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
+
+					if(!prevList && nextList) {
+						targetList.pos = nextList.pos / 2; // 첫 번째 자리
+						console.log('첫 번째 자리');
+					}
+					else if(!nextList && prevList) {
+						targetList.pos = prevList.pos * 2; //마지막 자리
+						console.log('마지막 자리');
+					}
+					else {
+						targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
+						console.log('중간 자리 ===',prevList.pos,'====',nextList.pos, arr[idx+1]);
+					}
 
 					vm.$http({
 						method: 'PUT',
@@ -139,7 +153,6 @@ export default {
 
 <style>
 .memo_list_wrap {display:flex;padding:0 50px;align-items:flex-start}
-.memo_list {}
 .memo_list > li {position:relative;margin-top:8px;padding:12px 10px;border-radius:4px;font-size:14px;background-color:#fff}
 .memo_list > li:first-child {margin-top:0}
 .memo_list > li input {border:0;outline:none;cursor:pointer}

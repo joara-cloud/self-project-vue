@@ -1,12 +1,13 @@
 <template>
 	<div>
 		<div class="sort">
-			<select name="" id="" v-model="sortSelect">
+			<select name="" id="" v-model="sortSelect" @change="onPaging">
 				<option value="8" selected>8개씩</option>
 				<option value="12">12개씩</option>
 				<option value="16">16개씩</option>
 			</select>
 		</div>
+		<p class="total">total : {{totalList}}</p>
 		<ul class="posts">
 			<li v-for="(post, index) in currentList" :key="index">
 				<router-link to="/board/view">
@@ -34,7 +35,7 @@
 		<div class="pagination_wrap pagination">
 			<button type="button" class="crumb crumb__prev">Previous</button>
 			<ul class="pagination crumbs">
-				<li v-for="(i, page) in new Array(pagination)" :key="i" :class="[currentPage == page ? 'active' : '', 'customclass']"><a :href="`?paging=${page}`" v-on:click.prevent="test(page)" class="crumb">{{page+1}} </a></li>
+				<li v-for="(i, page) in new Array(pagination)" :key="i" :class="[currentPage == page ? 'active' : '', 'customclass']"><a :href="`?paging=${page}`" v-on:click.prevent="onPaging(page)" class="crumb">{{page+1}} </a></li>
 			</ul>
 			<button type="button" class="crumb crumb__next">Next</button>
 		</div>
@@ -61,9 +62,11 @@ export default {
 		Dim
 	},
 	methods: {
-		test: function(page) {
-			this.currentPage = page;
-			console.log(this.currentPage);
+		onPaging: function(page) {
+			// if(page < this.pagination) this.currentPage = page;
+			// else this.currentPage = this.pagination-1;
+
+			page < this.pagination ? this.currentPage = page : this.currentPage = this.pagination-1;
 		}
 	},
 	created() {
@@ -109,6 +112,7 @@ export default {
 .posts .thumb img {width:100%}
 .sort {padding:0 0 10px;text-align:right}
 .sort select {padding:7px 10px;border:1px solid #ccc;border-radius:5px;font-size:14px}
+.total {padding:0 0 15px;font-weight:600;color:#172852}
 
 
 .pagination {
