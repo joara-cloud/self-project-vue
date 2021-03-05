@@ -17,7 +17,7 @@ var routes = [
         component: () => import('@/views/board/List.vue')
       },      
       {
-        path: 'view',
+        path: 'view/:idx',
         component: () => import('@/views/board/View.vue')
       },
       {

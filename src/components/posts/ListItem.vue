@@ -10,13 +10,16 @@
 		<p class="total">total : {{totalList}}</p>
 		<ul class="posts">
 			<li v-for="(post, index) in currentList" :key="index">
-				<router-link to="/board/view">
+				<router-link v-bind:to="`view/idx=${post.idx}`">
 					<div class="thumb">
 						<img src="@/assets/images/temp.png" alt="">
 					</div>
 					<div class="info">
 						<h4 class="post_subject">{{post.subject}}</h4>
-						<p class="post_date">{{post.created}}</p>
+						<!-- <p class="post_date">{{getFormateDate(post.date)}}</p> -->
+						<!-- 각 반복에 대해 계산 된 속성을 만들 수없다. -->
+						date: {{post.created}}
+						<p class="post_date">{{getFormateDateMethod(post.created)}}</p>
 					</div>
 				</router-link>
 			</li>
@@ -33,11 +36,11 @@
 			</li> -->
 		</ul>
 		<div class="pagination_wrap pagination">
-			<button type="button" class="crumb crumb__prev">Previous</button>
+			<button type="button" class="crumb crumb__prev" @click="prevPage">Previous</button>
 			<ul class="pagination crumbs">
 				<li v-for="(i, page) in new Array(pagination)" :key="i" :class="[currentPage == page ? 'active' : '', 'customclass']"><a :href="`?paging=${page}`" v-on:click.prevent="onPaging(page)" class="crumb">{{page+1}} </a></li>
 			</ul>
-			<button type="button" class="crumb crumb__next">Next</button>
+			<button type="button" class="crumb crumb__next" @click="nextPage">Next</button>
 		</div>
 		<Dim v-if="loading"></Dim>
 	</div>
@@ -53,8 +56,9 @@ export default {
 			totalList: 0, // 전체 DATA개수
 			paging: 0, // 페이징 개수
 			// listNum: 8, // 한 페이지당 DATA 개수 (초기 10개)
-			currentPage: 0, // 현재페이지
+			currentPage: 0, // 현재페이지 (1page: 0, 2page: 1, 3page: 2, ...)
 			sortSelect: 8, // 정렬개수
+			totalPageNum: 0, // 전체 페이징 버튼 개수
 			loading: true
 		}
 	},
@@ -67,6 +71,23 @@ export default {
 			// else this.currentPage = this.pagination-1;
 
 			page < this.pagination ? this.currentPage = page : this.currentPage = this.pagination-1;
+		},
+		getFormateDateMethod(date) { // 날짜 형식
+			var formatDate = new Date(date);
+			var year = formatDate.getFullYear();
+			var month = formatDate.getMonth()+1;
+			month = month < 10 ? '0'+month : month;
+			var day = formatDate.getDate();
+			day = day < 10 ? '0'+day : day;
+
+			return year+'. '+month+'. '+day;
+		},
+		nextPage() { // 다음 페이지
+			this.currentPage+1 < this.pagination ? this.currentPage = this.currentPage+1 : this.currentPage = this.pagination-1; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
+		},
+		prevPage() { // 이전 페이지
+			this.currentPage-1 < 0 ? this.currentPage = 0 : this.currentPage = this.currentPage-1;
+			console.log('current page(prev) : '+this.currentPage);
 		}
 	},
 	created() {
@@ -85,19 +106,22 @@ export default {
 	},
 	computed: {
 		currentList() {
-			const start = this.currentPage * this.sortSelect*1; // 페이지 넘어가는 문제 currentpage는 있음 [문제]
+			const start = this.currentPage * this.sortSelect*1;
 			const end = start + this.sortSelect*1;
 
 			console.log('current page : ',this.currentPage);
 			console.log('start : ',start,'end : ',end);
 
 			return this.posts.slice(start, end);
-			// return this.sortSelect;
 		},
-		pagination() {
-			// this.paging = Math.ceil(this.totalList / this.sortSelect);
+		pagination() { // 전체 페이징 버튼 개수
 			return Math.ceil(this.totalList / this.sortSelect);
-
+		},
+		getFormateDate() {
+			return (date) => {
+				console.log(date);
+				return date+'asdfasdfasfd';
+			}
 		}
 	}
 }
