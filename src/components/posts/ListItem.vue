@@ -10,14 +10,13 @@
 		<p class="total">total : {{totalList}}</p>
 		<ul class="posts">
 			<li v-for="(post, index) in currentList" :key="index">
-				<router-link v-bind:to="`view/idx=${post.idx}`">
+				<router-link v-bind:to="`view/${post.idx}`">
 					<div class="thumb">
-						<img src="@/assets/images/temp.png" alt="">
+						<!-- <img src="@/assets/images/temp.png" alt=""> -->
+						<img :src="post.f_name ? `/${post.f_name}` : '/temp.png'" alt="">
 					</div>
 					<div class="info">
 						<h4 class="post_subject">{{post.subject}}</h4>
-						<!-- <p class="post_date">{{getFormateDate(post.date)}}</p> -->
-						<!-- 각 반복에 대해 계산 된 속성을 만들 수없다. -->
 						date: {{post.created}}
 						<p class="post_date">{{getFormateDateMethod(post.created)}}</p>
 					</div>
@@ -47,6 +46,7 @@
 </template>
 
 <script>
+import {fetch_posts} from '@/api/index.js';
 import Dim from '@/components/common/Dim.vue';
 
 export default {
@@ -87,22 +87,24 @@ export default {
 		},
 		prevPage() { // 이전 페이지
 			this.currentPage-1 < 0 ? this.currentPage = 0 : this.currentPage = this.currentPage-1;
-			console.log('current page(prev) : '+this.currentPage);
 		}
 	},
-	created() {
-		this.$http({
-			method: 'get',
-			url: '/posts'
-		}).then( ({data}) => {
-			console.log('get posts success!');
-			this.posts = data.posts;
-			this.totalList = this.posts.length;
+	async created() {
+		// this.$http({
+		// 	method: 'get',
+		// 	url: '/posts'
+		// }).then( ({data}) => {
+		// 	console.log('get posts success!');
+		// 	this.posts = data.posts;
+		// 	this.totalList = this.posts.length;
 
-			this.loading = false;
-		}).catch(function(err) {
-			console.log('catch : ', err);
-		})
+		// 	this.loading = false;
+		// }).catch(function(err) {
+		// 	console.log('catch : ', err);
+		// })
+		const response = await fetch_posts('get', 'posts');
+		console.log(response);
+
 	},
 	computed: {
 		currentList() {
