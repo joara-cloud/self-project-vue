@@ -1,22 +1,25 @@
 <template>
 	<div>
 		<h3>{{this.postIndx}}</h3>
-		board view
-		
+		<view-content :postIndex="postIndex"></view-content>
 		<router-link to="/board/list" class="btn_ty01">목록으로</router-link>
 	</div>
 </template>
 
 <script>
+import ViewContent from '@/components/posts/ViewContent.vue';
+
 export default {
 	data() {
 		return {
-			postIndx: 0
+			postIndex: 0
 		}
 	},
-	created() {
-		console.log(this.$route);
-		this.postIndx = this.$route.params.idx;
+	components: {
+		ViewContent
+	},
+	async created() {
+		this.postIndex = this.$route.params.idx;
 	}
 }
 </script>

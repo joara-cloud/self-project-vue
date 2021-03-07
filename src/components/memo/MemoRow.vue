@@ -13,7 +13,7 @@
 					</div>
 					<button type="button" class="memo_delete">&times;</button>
 				</li> -->
-				<li class="list_item" v-for="(row, index) in rowData" v-bind:key="index">
+				<li class="list_item" v-for="row in rowData" v-bind:key="row.idx">
 					<div :data-idx="row.idx" :data-pos="row.pos">
 						<input type="text" :value="row.subject" readonly>
 						{{row.idx}}

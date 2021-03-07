@@ -102,8 +102,16 @@ export default {
 		// }).catch(function(err) {
 		// 	console.log('catch : ', err);
 		// })
-		const response = await fetch_posts('get', 'posts');
-		console.log(response);
+		try {
+			const {data} = await fetch_posts('get', '/posts');
+			this.posts = data.posts;
+			this.totalList = this.posts.length;
+			this.loading = false;
+			console.log(data);
+		} catch(err) {
+			console.log('fetch_posts 중 err : ', err);
+		}
+
 
 	},
 	computed: {
@@ -130,6 +138,7 @@ export default {
 </script>
 
 <style>
+/* posts */
 .posts {margin-left:-2%;font-size:0}
 .posts > li {display:inline-block;width:23%;margin-left:2%;margin-bottom:25px;vertical-align:top}
 .posts > li > a {display:block}
@@ -140,39 +149,11 @@ export default {
 .sort select {padding:7px 10px;border:1px solid #ccc;border-radius:5px;font-size:14px}
 .total {padding:0 0 15px;font-weight:600;color:#172852}
 
-
-.pagination {
-  display: flex;justify-content:center;
-  padding: 1rem;
-  border-radius: 0.25rem;
-}
-
-.crumbs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  gap: 0.5rem;
-}
-
-.crumb {
-  display: block;
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-  color: currentColor;
-  border-radius: 0.2rem;
-  border: 0.0625rem solid #d7d7d7; /* 1px */
-}
-
-.crumb:hover, .active .crumb, .crumb__active {
-  background-color: #1d1f20;
-  color: #fdfdfd;
-  border-color: #1d1f20;
-}
-
+/* pagination */
+.pagination {display: flex;justify-content:center;padding: 1rem;border-radius: 0.25rem;}
+.crumbs {display: flex;flex-wrap: wrap;justify-content: center;align-items: center;list-style-type: none;margin: 0;padding: 0;gap: 0.5rem;}
+.crumb {display: block;padding: 0.5rem 1rem;text-decoration: none;color: currentColor;border-radius: 0.2rem;border: 0.0625rem solid #d7d7d7; /* 1px */}
+.crumb:hover, .active .crumb, .crumb__active {background-color: #1d1f20;color: #fdfdfd;border-color: #1d1f20;}
 .crumb__prev { margin-right: 0.5rem; }
 .crumb__next { margin-left: 0.5rem;}
 </style>
