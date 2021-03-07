@@ -10,15 +10,14 @@
 		<p class="total">total : {{totalList}}</p>
 		<ul class="posts">
 			<li v-for="(post, index) in currentList" :key="index">
-				<router-link v-bind:to="`view/${post.idx}`">
+				<router-link v-bind:to="`view/${post.pid}`">
 					<div class="thumb">
 						<!-- <img src="@/assets/images/temp.png" alt=""> -->
 						<img :src="post.f_name ? `/${post.f_name}` : '/temp.png'" alt="">
 					</div>
 					<div class="info">
 						<h4 class="post_subject">{{post.subject}}</h4>
-						date: {{post.created}}
-						<p class="post_date">{{getFormateDateMethod(post.created)}}</p>
+						<p class="post_date">{{dateFormat(post.created, '. ')}}</p>
 					</div>
 				</router-link>
 			</li>
@@ -47,6 +46,7 @@
 
 <script>
 import {fetch_posts} from '@/api/index.js';
+import {dateFormat} from '@/utils/dateFormat.js';
 import Dim from '@/components/common/Dim.vue';
 
 export default {
@@ -59,7 +59,7 @@ export default {
 			currentPage: 0, // 현재페이지 (1page: 0, 2page: 1, 3page: 2, ...)
 			sortSelect: 8, // 정렬개수
 			totalPageNum: 0, // 전체 페이징 버튼 개수
-			loading: true
+			loading: true,
 		}
 	},
 	components: {
@@ -72,22 +72,13 @@ export default {
 
 			page < this.pagination ? this.currentPage = page : this.currentPage = this.pagination-1;
 		},
-		getFormateDateMethod(date) { // 날짜 형식
-			var formatDate = new Date(date);
-			var year = formatDate.getFullYear();
-			var month = formatDate.getMonth()+1;
-			month = month < 10 ? '0'+month : month;
-			var day = formatDate.getDate();
-			day = day < 10 ? '0'+day : day;
-
-			return year+'. '+month+'. '+day;
-		},
 		nextPage() { // 다음 페이지
 			this.currentPage+1 < this.pagination ? this.currentPage = this.currentPage+1 : this.currentPage = this.pagination-1; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
 		},
 		prevPage() { // 이전 페이지
 			this.currentPage-1 < 0 ? this.currentPage = 0 : this.currentPage = this.currentPage-1;
-		}
+		},
+		dateFormat
 	},
 	async created() {
 		// this.$http({
@@ -105,7 +96,7 @@ export default {
 		try {
 			const {data} = await fetch_posts('get', '/posts');
 			this.posts = data.posts;
-			this.totalList = this.posts.length;
+			this.totalList = data.posts.length;
 			this.loading = false;
 			console.log(data);
 		} catch(err) {
@@ -119,19 +110,10 @@ export default {
 			const start = this.currentPage * this.sortSelect*1;
 			const end = start + this.sortSelect*1;
 
-			console.log('current page : ',this.currentPage);
-			console.log('start : ',start,'end : ',end);
-
 			return this.posts.slice(start, end);
 		},
 		pagination() { // 전체 페이징 버튼 개수
 			return Math.ceil(this.totalList / this.sortSelect);
-		},
-		getFormateDate() {
-			return (date) => {
-				console.log(date);
-				return date+'asdfasdfasfd';
-			}
 		}
 	}
 }

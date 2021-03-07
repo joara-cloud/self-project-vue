@@ -27,13 +27,14 @@
 		</div>
 		<!-- <router-link to="/card/1" id="addCard" class="memo_section" v-on:click.prevent="$emit('dhow')">+ Add Card</router-link> -->
 		<a href="" id="addCard" class="memo_section">+ Add Card</a>
-		<div class="dim" v-if="isLoading">loading...</div>
+		<Dim v-if="isLoading"></Dim>
 	</div>
 </template>
 
 <script>
 import dragula from 'dragula';
 import 'dragula/dist/dragula.css';
+import Dim from '@/components/common/Dim.vue'
 import Bus from '@/utils/bus.js'
 
 export default {
@@ -43,6 +44,9 @@ export default {
 			rowData: [],
 			isLoading: true
 		}
+	},
+	components: {
+		Dim
 	},
 	methods: {
 		addList() {
@@ -163,7 +167,6 @@ export default {
 .memo_section {width:250px;margin-left:20px;padding:15px;border-radius:6px;background-color:#E5EFF5}
 .memo_section:first-child {margin-left:0}
 .memo_section h3 {padding:0 0 10px;font-size:16px}
-.dim {display:flex;position:fixed;left:0;top:0;width:100%;height:100%;color:#fff;background:rgba(0, 0, 0, 0.3);justify-content:center;align-items:center}
 
 /* drag */
 .gu-mirror {position:relative;margin-top:8px;padding:12px 10px;border-radius:4px;box-sizing:border-box;font-size:14px;background-color:#fff;transform:rotate(5deg)}
