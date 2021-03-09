@@ -9,7 +9,7 @@ var routes = [
     component: () => import('@/views/Home.vue')
   },
   {
-    path: '/board',
+    path: '/posts',
     component: () => import('@/views/board/Index.vue'),
     children: [
       {
@@ -54,7 +54,7 @@ var routes = [
 ]
 
 var router = new VueRouter({
-  mode: 'history',
+  mode: 'history', // 특정 URL에서 새로고침시 404뜨는거때문에 일시적으로 해둠
   base: process.env.BASE_URL,
   routes
 });

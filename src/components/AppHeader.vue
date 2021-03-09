@@ -6,7 +6,7 @@
 			<ul class="gnb">
 				<li><router-link to="/usage">Usage</router-link></li>
 				<li><router-link to="/memo">Memo</router-link></li>
-				<li><router-link to="/board/list">Board</router-link></li>
+				<li><router-link to="/posts/list">Board</router-link></li>
 				<li class="member"><router-link to="/login">Login</router-link></li>
 			</ul>
 		</div>

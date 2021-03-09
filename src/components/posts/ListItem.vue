@@ -34,11 +34,23 @@
 			</li> -->
 		</ul>
 		<div class="pagination_wrap pagination">
-			<button type="button" class="crumb crumb__prev" @click="prevPage">Previous</button>
+			<!-- <button type="button" class="crumb crumb__prev" @click="prevPage">Previous</button> -->
+			<a :href="`?page=${prevPage}`" class="crumb crumb__prev" @click="prevPage">Previous</a>
 			<ul class="pagination crumbs">
-				<li v-for="(i, page) in new Array(pagination)" :key="i" :class="[currentPage == page ? 'active' : '', 'customclass']"><a :href="`?paging=${page}`" v-on:click.prevent="onPaging(page)" class="crumb">{{page+1}} </a></li>
+				<li 
+				v-for="(i, page) in new Array(pagination)" 
+				:key="i" :class="[currentPage == page ? 'active' : '', 'customclass']">
+					<!-- <a :href="`?paging=${page}`" v-on:click.prevent="onPaging(page)" class="crumb"> -->
+					<a :href="`?page=${page}`" class="crumb">
+						<!-- {{page+1}}  -->
+						currentPage : {{currentPage}}
+						i : {{i}}
+						page : {{page}}
+					</a>
+				</li>
 			</ul>
-			<button type="button" class="crumb crumb__next" @click="nextPage">Next</button>
+			<!-- <button type="button" class="crumb crumb__next" @click="nextPage">Next</button> -->
+			<a :href="`?page=${nextPage}`" class="crumb crumb__next" @click="nextPage">Next</a>
 		</div>
 		<Dim v-if="loading"></Dim>
 	</div>
@@ -55,11 +67,13 @@ export default {
 			posts: [],
 			totalList: 0, // 전체 DATA개수
 			paging: 0, // 페이징 개수
-			// listNum: 8, // 한 페이지당 DATA 개수 (초기 10개)
+			listNum: 8, // 한 페이지당 DATA 개수 (초기 8개)
 			currentPage: 0, // 현재페이지 (1page: 0, 2page: 1, 3page: 2, ...)
 			sortSelect: 8, // 정렬개수
 			totalPageNum: 0, // 전체 페이징 버튼 개수
-			loading: true,
+			loading: false,
+			prevPage: 0,
+			nextPage: 0,
 		}
 	},
 	components: {
@@ -72,29 +86,17 @@ export default {
 
 			page < this.pagination ? this.currentPage = page : this.currentPage = this.pagination-1;
 		},
-		nextPage() { // 다음 페이지
-			this.currentPage+1 < this.pagination ? this.currentPage = this.currentPage+1 : this.currentPage = this.pagination-1; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
-		},
-		prevPage() { // 이전 페이지
-			this.currentPage-1 < 0 ? this.currentPage = 0 : this.currentPage = this.currentPage-1;
-		},
+		// nextPage() { // 다음 페이지
+		// 	this.currentPage+1 < this.pagination ? this.currentPage = this.currentPage+1 : this.currentPage = this.pagination-1; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
+		// },
+		// prevPage() { // 이전 페이지
+		// 	this.currentPage-1 < 0 ? this.currentPage = 0 : this.currentPage = this.currentPage-1;
+		// },
 		dateFormat
 	},
 	async created() {
-		// this.$http({
-		// 	method: 'get',
-		// 	url: '/posts'
-		// }).then( ({data}) => {
-		// 	console.log('get posts success!');
-		// 	this.posts = data.posts;
-		// 	this.totalList = this.posts.length;
-
-		// 	this.loading = false;
-		// }).catch(function(err) {
-		// 	console.log('catch : ', err);
-		// })
 		try {
-			const {data} = await fetch_posts('get', '/posts');
+			const {data} = await fetch_posts('get', '/posts/list');
 			this.posts = data.posts;
 			this.totalList = data.posts.length;
 			this.loading = false;
@@ -103,6 +105,14 @@ export default {
 			console.log('fetch_posts 중 err : ', err);
 		}
 
+		this.currentPage = this.$route.query.page ? this.$route.query.page : 1;
+		this.listNum = this.$route.query.page ? this.$route.query : 1;
+
+
+		this.currentPage *= 1;
+		this.nextNum = this.currentPage + 1 < this.pagination ? this.currentPage + 1 : this.pagination - 1;
+		this.prevPage = this.currentPage-1 < 0 ? 0 : this.currentPage-1;
+		console.log(this.prevPage);
 
 	},
 	computed: {
@@ -114,7 +124,14 @@ export default {
 		},
 		pagination() { // 전체 페이징 버튼 개수
 			return Math.ceil(this.totalList / this.sortSelect);
-		}
+		},
+
+		// nextPage() { // 다음 페이지
+		// 	this.currentPage+1 < this.pagination ? this.currentPage = this.currentPage+1 : this.currentPage = this.pagination-1; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
+		// },
+		// prevPage() { // 이전 페이지
+		// 	this.currentPage-1 < 0 ? this.currentPage = 0 : this.currentPage = this.currentPage-1;
+		// },
 	}
 }
 </script>
