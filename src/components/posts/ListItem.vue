@@ -39,13 +39,13 @@
 			<ul class="pagination crumbs">
 				<li 
 				v-for="(i, page) in new Array(pagination)" 
-				:key="i" :class="[currentPage == page ? 'active' : '', 'customclass']">
+				:key="i" :class="[currentPage == page+1 ? 'active' : '', 'customclass']">
 					<!-- <a :href="`?paging=${page}`" v-on:click.prevent="onPaging(page)" class="crumb"> -->
-					<a :href="`?page=${page}`" class="crumb">
+					<a :href="`?page=${page+1}`" class="crumb">
 						<!-- {{page+1}}  -->
 						currentPage : {{currentPage}}
 						i : {{i}}
-						page : {{page}}
+						page : {{page+1}}
 					</a>
 				</li>
 			</ul>
@@ -68,7 +68,7 @@ export default {
 			totalList: 0, // 전체 DATA개수
 			paging: 0, // 페이징 개수
 			listNum: 8, // 한 페이지당 DATA 개수 (초기 8개)
-			currentPage: 0, // 현재페이지 (1page: 0, 2page: 1, 3page: 2, ...)
+			currentPage: 1, // 현재페이지 (1page: 0, 2page: 1, 3page: 2, ...)
 			sortSelect: 8, // 정렬개수
 			totalPageNum: 0, // 전체 페이징 버튼 개수
 			loading: false,
@@ -84,7 +84,7 @@ export default {
 			// if(page < this.pagination) this.currentPage = page;
 			// else this.currentPage = this.pagination-1;
 
-			page < this.pagination ? this.currentPage = page : this.currentPage = this.pagination-1;
+			page < this.pagination ? this.currentPage = page : this.currentPage = this.pagination;
 		},
 		// nextPage() { // 다음 페이지
 		// 	this.currentPage+1 < this.pagination ? this.currentPage = this.currentPage+1 : this.currentPage = this.pagination-1; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
@@ -96,11 +96,15 @@ export default {
 	},
 	async created() {
 		try {
-			const {data} = await fetch_posts('get', '/posts/list');
+			const {data} = await fetch_posts('get', '/posts/list', );
 			this.posts = data.posts;
 			this.totalList = data.posts.length;
 			this.loading = false;
-			console.log(data);
+
+			// query test
+			// const response = await fetch_posts('get', '/posts/list');
+			// console.log(response);
+
 		} catch(err) {
 			console.log('fetch_posts 중 err : ', err);
 		}
@@ -110,14 +114,13 @@ export default {
 
 
 		this.currentPage *= 1;
-		this.nextNum = this.currentPage + 1 < this.pagination ? this.currentPage + 1 : this.pagination - 1;
-		this.prevPage = this.currentPage-1 < 0 ? 0 : this.currentPage-1;
-		console.log(this.prevPage);
+		this.nextNum = this.currentPage + 1 < this.pagination ? this.currentPage + 1 : this.pagination;
+		this.prevPage = this.currentPage - 1 < 1 ? 1 : this.currentPage-1;
 
 	},
 	computed: {
 		currentList() {
-			const start = this.currentPage * this.sortSelect*1;
+			const start = (this.currentPage-1) * this.sortSelect*1;
 			const end = start + this.sortSelect*1;
 
 			return this.posts.slice(start, end);

@@ -2,10 +2,11 @@ import axios from 'axios';
 
 
 
-export const fetch_posts = (method, url) => { // 게시물 출력
+export const fetch_posts = (method, url, querysting) => { // 게시물 출력
 	return axios({
 		method,
-		url
+		url,
+		data: querysting
 	})
 }
 
