@@ -42,26 +42,38 @@ export default {
 		return {
 			dragulaCard: '',
 			rowData: [],
-			isLoading: true
+			isLoading: true,
+			cardArray: [],
 		}
 	},
 	components: {
 		Dim
 	},
 	methods: {
-		addList() {
-			console.log('add list');
-		},
 		fetchList() {
-			console.log('asjidfojosdf');
 			this.$http({
 				method: 'post',
 				url: '/memo/fetch'
 			})
 			.then(({data}) => {
-				console.log('api 요청함', this.rowData);
 				this.rowData = data.rows;
 				this.isLoading = false;
+
+				console.log('api 요청함', this.rowData);
+
+				var tempArray = [];
+				this.rowData.forEach(function(element) {
+					var cardInfo = {
+						cardId: element.idx,
+						cardPos: element.pos
+					}
+					
+					tempArray.push(cardInfo);
+				});
+
+				this.cardArray = tempArray;
+				console.log(this.cardArray);
+
 			})
 		},
 		deleteList(id) {
@@ -119,6 +131,8 @@ export default {
 						pos: arr[idx+1].firstElementChild.dataset.pos*1
 					} : null;
 
+					console.log(idx);
+
 					// if(!prevList && nextList) targetList.pos = nextList.pos / 2; // 첫 번째 자리
 					// else if(!nextList && prevList) targetList.pos = prevList.pos * 2; //마지막 자리
 					// else targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
@@ -134,6 +148,7 @@ export default {
 					else {
 						targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
 						console.log('중간 자리 ===',prevList.pos,'====',nextList.pos, arr[idx+1]);
+						this.testNum = 3;
 					}
 
 					vm.$http({
@@ -143,6 +158,8 @@ export default {
 							pos: targetList.pos,
 							idx: targetList.idx
 						}
+					}).then(function() {
+						console.log(vm.rowData);
 					})
 				}
 
