@@ -36,6 +36,7 @@ import dragula from 'dragula';
 import 'dragula/dist/dragula.css';
 import Dim from '@/components/common/Dim.vue'
 import Bus from '@/utils/bus.js'
+import {FETCH_MEMO} from '@/api/memo.js';
 
 export default {
 	data() {
@@ -43,39 +44,24 @@ export default {
 			dragulaCard: '',
 			rowData: [],
 			isLoading: true,
-			cardArray: [],
 		}
 	},
 	components: {
 		Dim
 	},
 	methods: {
-		fetchList() {
-			this.$http({
-				method: 'post',
-				url: '/memo/fetch'
-			})
-			.then(({data}) => {
-				this.rowData = data.rows;
-				this.isLoading = false;
+		// fetchList() {
+		// 	this.$http({
+		// 		method: 'post',
+		// 		url: '/memo/fetch'
+		// 	})
+		// 	.then(({data}) => {
+		// 		this.rowData = data.rows;
+		// 		this.isLoading = false;
 
-				console.log('api 요청함', this.rowData);
-
-				var tempArray = [];
-				this.rowData.forEach(function(element) {
-					var cardInfo = {
-						cardId: element.idx,
-						cardPos: element.pos
-					}
-					
-					tempArray.push(cardInfo);
-				});
-
-				this.cardArray = tempArray;
-				console.log(this.cardArray);
-
-			})
-		},
+		// 		console.log('api 요청함', this.rowData);
+		// 	})
+		// },
 		deleteList(id) {
 			console.log(id);
 			const vm = this;
@@ -98,8 +84,17 @@ export default {
 			})
 		}
 	},
-	created() {
-		this.fetchList();
+	async created() {
+		// this.fetchList();
+		try {
+			const {data} = await FETCH_MEMO('post', '/memo/fetch');
+			this.rowData = data.rows;
+			this.isLoading = false;
+
+			console.log('[created] fetch memo : ',this.rowData);
+		}catch(err) {
+			console.log(err);
+		}
 		Bus.$on('onFetch', this.fetchList);
 		
 	},
@@ -131,8 +126,6 @@ export default {
 						pos: arr[idx+1].firstElementChild.dataset.pos*1
 					} : null;
 
-					console.log(idx);
-
 					// if(!prevList && nextList) targetList.pos = nextList.pos / 2; // 첫 번째 자리
 					// else if(!nextList && prevList) targetList.pos = prevList.pos * 2; //마지막 자리
 					// else targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
@@ -147,7 +140,7 @@ export default {
 					}
 					else {
 						targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
-						console.log('중간 자리 ===',prevList.pos,'====',nextList.pos, arr[idx+1]);
+						console.log('중간 자리');
 						this.testNum = 3;
 					}
 
@@ -158,8 +151,9 @@ export default {
 							pos: targetList.pos,
 							idx: targetList.idx
 						}
-					}).then(function() {
-						console.log(vm.rowData);
+					}).then(async () => {
+						const {data} = await FETCH_MEMO('post', '/memo/fetch');
+						this.rowData = data.rows;
 					})
 				}
 
