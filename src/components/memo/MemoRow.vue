@@ -36,7 +36,7 @@ import dragula from 'dragula';
 import 'dragula/dist/dragula.css';
 import Dim from '@/components/common/Dim.vue'
 import Bus from '@/utils/bus.js'
-import {FETCH_MEMO} from '@/api/memo.js';
+import {FETCH_MEMO, DELETE_MEMO} from '@/api/memo.js';
 
 export default {
 	data() {
@@ -50,42 +50,36 @@ export default {
 		Dim
 	},
 	methods: {
-		// fetchList() {
-		// 	this.$http({
-		// 		method: 'post',
-		// 		url: '/memo/fetch'
-		// 	})
-		// 	.then(({data}) => {
-		// 		this.rowData = data.rows;
-		// 		this.isLoading = false;
-
-		// 		console.log('api 요청함', this.rowData);
-		// 	})
-		// },
 		deleteList(id) {
 			console.log(id);
-			const vm = this;
 
 			if(!window.confirm('해당 리스트를 삭제하시겠습니까?')) return;
 
-			this.$http({
-				method: 'delete',
-				url: '/memo/delete',
-				data: {
-					id
-				}
-			})
-			.then(function() {
-				console.log('삭제됨');
-				vm.fetchList();
-			})
-			.catch(function(err) {
-				console.log(err);
-			})
+			try {
+				DELETE_MEMO('delete', `/memo/delete/${id}`);
+				FETCH_MEMO('post', '/memo/fetch');
+
+			}catch(err) {
+				console.log('', err);
+			}
+
+			// this.$http({
+			// 	method: 'delete',
+			// 	url: '/memo/delete',
+			// 	data: {
+			// 		id
+			// 	}
+			// })
+			// .then(function() {
+			// 	console.log('삭제됨');
+			// 	vm.fetchList();
+			// })
+			// .catch(function(err) {
+			// 	console.log(err);
+			// })
 		}
 	},
 	async created() {
-		// this.fetchList();
 		try {
 			const {data} = await FETCH_MEMO('post', '/memo/fetch');
 			this.rowData = data.rows;
