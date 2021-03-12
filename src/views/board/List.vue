@@ -13,7 +13,7 @@ import ListItem from '@/components/posts/ListItem.vue';
 
 export default {
 	components: {
-		ListItem
+		ListItem,
 	}
 }
 </script>

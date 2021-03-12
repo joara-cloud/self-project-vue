@@ -1,21 +1,23 @@
 <template>
 	<div>
 		<div class="sort">
-			<select name="" id="" v-model="sortSelect" @change="onPaging">
-				<option value="8" selected>8개씩</option>
-				<option value="12">12개씩</option>
-				<option value="16">16개씩</option>
-			</select>
+			<form method="get" ref="uploadForm">
+				<select name="" id="" v-model="sortSelect" @change="onPaging">
+					<option value="8" :selected="listNum===8">8개씩</option>
+					<option value="12" :selected="listNum===12">12개씩</option>
+					<option value="16" :selected="listNum===16">16개씩</option>
+				</select>
+			</form>
 		</div>
 		<p class="total">total : {{totalList}}</p>
 		<ul class="posts">
-			<li v-for="(post, index) in currentList" :key="index">
+			<li v-for="(post, index) in posts" :key="index">
 				<router-link v-bind:to="`view/${post.pid}`">
 					<div class="thumb">
-						<!-- <img src="@/assets/images/temp.png" alt=""> -->
 						<img :src="post.f_name ? `/${post.f_name}` : '/temp.png'" alt="">
 					</div>
 					<div class="info">
+						<p>{{post.pid}}</p>
 						<h4 class="post_subject">{{post.subject}}</h4>
 						<p class="post_date">{{dateFormat(post.created, '. ')}}</p>
 					</div>
@@ -23,30 +25,22 @@
 			</li>
 		</ul>
 		<div class="pagination_wrap pagination">
-			<!-- <button type="button" class="crumb crumb__prev" @click="prevPage">Previous</button> -->
-			<a :href="`?page=${prevPage}`" class="crumb crumb__prev" @click="prevPage">Previous</a>
+			<a :href="`?page=${prevPaging}&listNum=${listNum}`" class="crumb crumb__prev" @click="prevPage">Previous</a>
 			<ul class="pagination crumbs">
 				<li 
 				v-for="(i, page) in new Array(pagination)" 
 				:key="i" :class="[currentPage == page+1 ? 'active' : '', 'customclass']">
-					<!-- <a :href="`?paging=${page}`" v-on:click.prevent="onPaging(page)" class="crumb"> -->
-					<a :href="`?page=${page+1}`" class="crumb">
-						<!-- {{page+1}}  -->
-						currentPage : {{currentPage}}
-						i : {{i}}
-						page : {{page+1}}
-					</a>
+					<a :href="`?page=${page+1}&listNum=${listNum}`" class="crumb">{{page+1}}</a>
 				</li>
 			</ul>
-			<!-- <button type="button" class="crumb crumb__next" @click="nextPage">Next</button> -->
-			<a :href="`?page=${nextPage}`" class="crumb crumb__next" @click="nextPage">Next</a>
+			<a :href="`?page=${nextPaging}&listNum=${listNum}`" class="crumb crumb__next" @click="nextPage">Next</a>
 		</div>
 		<Dim v-if="loading"></Dim>
 	</div>
 </template>
 
 <script>
-import {fetch_posts} from '@/api/index.js';
+import {fetch_posts} from '@/api/posts.js';
 import {dateFormat} from '@/utils/dateFormat.js';
 import Dim from '@/components/common/Dim.vue';
 
@@ -58,36 +52,36 @@ export default {
 			paging: 0, // 페이징 개수
 			listNum: 8, // 한 페이지당 DATA 개수 (초기 8개)
 			currentPage: 1, // 현재페이지 (1page: 0, 2page: 1, 3page: 2, ...)
-			sortSelect: 8, // 정렬개수
-			totalPageNum: 0, // 전체 페이징 버튼 개수
-			loading: false,
+			sortSelect: this.$route.query.listNum, // 정렬개수
+			totallistNum: 0, // 전체 페이징 버튼 개수
+			loading: true,
 			prevPage: 0,
 			nextPage: 0,
+			fullPath: ''
 		}
 	},
 	components: {
 		Dim
 	},
-	methods: {
-		onPaging: function(page) {
-			// if(page < this.pagination) this.currentPage = page;
-			// else this.currentPage = this.pagination-1;
+	async created() {		
+		this.currentPage = this.$route.query.page ? this.$route.query.page : 1;
+		this.listNum = this.$route.query.listNum;
 
-			page < this.pagination ? this.currentPage = page : this.currentPage = this.pagination;
-		},
-		// nextPage() { // 다음 페이지
-		// 	this.currentPage+1 < this.pagination ? this.currentPage = this.currentPage+1 : this.currentPage = this.pagination-1; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
-		// },
-		// prevPage() { // 이전 페이지
-		// 	this.currentPage-1 < 0 ? this.currentPage = 0 : this.currentPage = this.currentPage-1;
-		// },
-		dateFormat
-	},
-	async created() {
+		this.fullPath = this.$route.path;
+
 		try {
-			const {data} = await fetch_posts('get', '/posts/list', );
+			const response = await fetch_posts('post', '/posts/list'); // 전체 데이터 개수
+			this.totalList = response.data.posts.length;
+
+			const fetchData = {
+				page: this.$route.query.page,
+				listNum: this.$route.query.listNum,
+			}
+			console.log('page : ', fetchData.page);
+			console.log('listNum : ', fetchData.listNum);
+			const {data} = await fetch_posts('post', '/posts/list', fetchData); // listNum 만큼 가져오기
 			this.posts = data.posts;
-			this.totalList = data.posts.length;
+
 			this.loading = false;
 
 			// query test
@@ -98,14 +92,10 @@ export default {
 			console.log('fetch_posts 중 err : ', err);
 		}
 
-		this.currentPage = this.$route.query.page ? this.$route.query.page : 1;
-		this.listNum = this.$route.query.page ? this.$route.query : 1;
-
 
 		this.currentPage *= 1;
 		this.nextNum = this.currentPage + 1 < this.pagination ? this.currentPage + 1 : this.pagination;
 		this.prevPage = this.currentPage - 1 < 1 ? 1 : this.currentPage-1;
-
 	},
 	computed: {
 		currentList() {
@@ -118,19 +108,36 @@ export default {
 			return Math.ceil(this.totalList / this.sortSelect);
 		},
 
-		// nextPage() { // 다음 페이지
-		// 	this.currentPage+1 < this.pagination ? this.currentPage = this.currentPage+1 : this.currentPage = this.pagination-1; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
-		// },
-		// prevPage() { // 이전 페이지
-		// 	this.currentPage-1 < 0 ? this.currentPage = 0 : this.currentPage = this.currentPage-1;
-		// },
-	}
+		nextPaging() { // 다음 페이지
+			return this.currentPage < this.pagination ? this.currentPage+1 : this.pagination; // 미래의 다음 페이지(this.currentPage+1)랑 페이지 총 개수랑 비교해서 더 커지면 그냥 총 개수로
+		},
+		prevPaging() { // 이전 페이지
+			return this.currentPage > 1 ? this.currentPage-1 : 1;
+		},
+	},
+	methods: {
+		onPaging: function() {
+
+			console.log(this.sortSelect);
+			this.listNum = this.sortSelect;
+
+			this.fetchListNum(this.sortSelect);
+
+		},
+		dateFormat,
+		fetchListNum(listNum=`${this.listNum}`) {
+			console.log('fetchListNum : ', listNum);
+
+			window.location.href = `/posts/list?page=${this.$route.query.page}&listNum=${listNum}`;
+		}
+	},
 }
 </script>
 
 <style>
 /* posts */
 .posts {margin-left:-2%;font-size:0}
+.posts p {font-size:14px}
 .posts > li {display:inline-block;width:23%;margin-left:2%;margin-bottom:25px;vertical-align:top}
 .posts > li > a {display:block}
 .posts .post_subject {padding:10px 0 0;font-size:16px;line-height:1.4;color:#172852}
