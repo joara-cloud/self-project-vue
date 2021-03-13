@@ -10,20 +10,23 @@
 			</form>
 		</div>
 		<p class="total">total : {{totalList}}</p>
-		<ul class="posts">
-			<li v-for="(post, index) in posts" :key="index">
-				<router-link v-bind:to="`view/${post.pid}`">
-					<div class="thumb">
-						<img :src="post.f_name ? `/${post.f_name}` : '/temp.png'" alt="">
-					</div>
-					<div class="info">
-						<p>{{post.pid}}</p>
-						<h4 class="post_subject">{{post.subject}}</h4>
-						<p class="post_date">{{dateFormat(post.created, '. ')}}</p>
-					</div>
-				</router-link>
-			</li>
-		</ul>
+		<form action="" @submit.prevent="onsubmit">
+			<ul class="posts">
+				<li v-for="(post, index) in posts" :key="index">
+					<input type="checkbox" name="selectedItem" id="" :value="post.pid" v-model="selectedItem">
+					<router-link v-bind:to="`view/${post.pid}`">
+						<div class="thumb">
+							<img :src="post.f_name ? `/${post.f_name}` : '/temp.png'" alt="">
+						</div>
+						<div class="info">
+							<h4 class="post_subject">{{post.subject}}</h4>
+							<p class="post_date">{{dateFormat(post.created, '. ')}}</p>
+						</div>
+					</router-link>
+				</li>
+			</ul>
+			<button type="submit">삭제</button>
+		</form>
 		<div class="pagination_wrap pagination">
 			<a :href="`?page=${prevPaging}&listNum=${listNum}`" class="crumb crumb__prev" @click="prevPage">Previous</a>
 			<ul class="pagination crumbs">
@@ -40,7 +43,7 @@
 </template>
 
 <script>
-import {fetch_posts} from '@/api/posts.js';
+import {FETCH_POSTS, DELETE_POST} from '@/api/posts.js';
 import {dateFormat} from '@/utils/dateFormat.js';
 import Dim from '@/components/common/Dim.vue';
 
@@ -57,40 +60,14 @@ export default {
 			loading: true,
 			prevPage: 0,
 			nextPage: 0,
-			fullPath: ''
+			selectedItem: [] // 선택한 게시물
 		}
 	},
 	components: {
 		Dim
 	},
 	async created() {		
-		this.currentPage = this.$route.query.page ? this.$route.query.page : 1;
-		this.listNum = this.$route.query.listNum;
-
-		this.fullPath = this.$route.path;
-
-		try {
-			const response = await fetch_posts('post', '/posts/list'); // 전체 데이터 개수
-			this.totalList = response.data.posts.length;
-
-			const fetchData = {
-				page: this.$route.query.page,
-				listNum: this.$route.query.listNum,
-			}
-			console.log('page : ', fetchData.page);
-			console.log('listNum : ', fetchData.listNum);
-			const {data} = await fetch_posts('post', '/posts/list', fetchData); // listNum 만큼 가져오기
-			this.posts = data.posts;
-
-			this.loading = false;
-
-			// query test
-			// const response = await fetch_posts('get', '/posts/list');
-			// console.log(response);
-
-		} catch(err) {
-			console.log('fetch_posts 중 err : ', err);
-		}
+		this.fetchData();
 
 
 		this.currentPage *= 1;
@@ -116,6 +93,32 @@ export default {
 		},
 	},
 	methods: {
+		// 데이터 불러오기
+		async fetchData() {
+			this.currentPage = this.$route.query.page ? this.$route.query.page : 1;
+			this.listNum = this.$route.query.listNum;
+
+			try {
+				// 전체 데이터 개수
+				const response = await FETCH_POSTS('post', '/posts/list'); 
+				this.totalList = response.data.posts.length;
+
+				// 뿌려질 데이터
+				const fetchData = {
+					page: this.$route.query.page,
+					listNum: this.$route.query.listNum,
+				}
+
+				// listNum 만큼 가져오기
+				const {data} = await FETCH_POSTS('post', '/posts/list', fetchData);
+				this.posts = data.posts;
+
+				this.loading = false;
+
+			} catch(err) {
+				console.log('FETCH_POSTS 중 err : ', err);
+			}
+		},
 		onPaging: function() {
 
 			console.log(this.sortSelect);
@@ -129,12 +132,25 @@ export default {
 			console.log('fetchListNum : ', listNum);
 
 			window.location.href = `/posts/list?page=${this.$route.query.page}&listNum=${listNum}`;
+		},
+		async onsubmit() {
+			if(!confirm('선택한 게시물을 삭제하시겠습니까?')) return;
+
+			const data = {deleteItem: this.selectedItem}
+
+			console.log(data);
+
+			const response = await DELETE_POST('delete', '/posts/delete', data);
+			alert(response.data.msg);
+			this.fetchData();
+
 		}
 	},
 }
 </script>
 
 <style>
+/* @import url('@/assets/css/post.css'); */
 /* posts */
 .posts {margin-left:-2%;font-size:0}
 .posts p {font-size:14px}

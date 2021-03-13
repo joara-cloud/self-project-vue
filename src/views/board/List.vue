@@ -3,7 +3,6 @@
 		<div class="inner">
 			<list-item></list-item>
 			<router-link to="/board/write" class="btn_ty01">글쓰기</router-link>
-			<a href="" class="btn_del">삭제</a>
 		</div>
 	</div>
 </template>

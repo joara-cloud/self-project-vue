@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import {fetch_post} from '@/api/index.js';
+import {FETCH_POST} from '@/api/index.js';
 import {dateFormat} from '@/utils/dateFormat.js';
 import Dim from '@/components/common/Dim.vue';
 
@@ -47,7 +47,7 @@ export default {
 	},
 	async created() {
 		try {
-			const {data} = await fetch_post('get', `/posts/${this.postIndex}`);
+			const {data} = await FETCH_POST('get', `/posts/${this.postIndex}`);
 			const post = data.posts[0];
 			this.subject = post.subject;
 			this.content = post.content;
