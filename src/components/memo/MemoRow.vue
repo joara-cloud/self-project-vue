@@ -1,5 +1,6 @@
 <template>
 	<div class="memo_list_wrap">
+		{{this.$store.state.testData}}
 		<div class="memo_section">
 			<h3>Doing</h3>
 			{{memoPosts}}
