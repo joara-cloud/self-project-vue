@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import {CREATE_MEMO} from '@/api/memo.js';
 import CardPopup from '@/components/memo/CardPopup.vue';
 import Bus from '@/utils/bus.js'
 
@@ -32,16 +33,12 @@ export default {
 	methods: {
 		submitMemoList() {
 			// API (insert)
-			this.$http({
-				method: 'post',
-				url: '/memo/create',
-				data: {
-					subject: this.subject,
-					content: this.content,
-					pos: 65335
-				}
-			})
-			.then(function(response) {
+			const data = {
+				subject: this.subject,
+				content: this.content,
+				pos: 65335
+			}
+			CREATE_MEMO('post', '/memo/create', data).then(function(response) {
 				console.log('성공!', response);
 				Bus.$emit('onFetch');
 			})

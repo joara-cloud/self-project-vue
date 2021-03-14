@@ -49,46 +49,8 @@ export default {
 	components: {
 		Dim
 	},
-	methods: {
-		deleteList(id) {
-			console.log(id);
-
-			if(!window.confirm('해당 리스트를 삭제하시겠습니까?')) return;
-
-			try {
-				DELETE_MEMO('delete', `/memo/delete/${id}`);
-				FETCH_MEMO('post', '/memo/fetch');
-
-			}catch(err) {
-				console.log('', err);
-			}
-
-			// this.$http({
-			// 	method: 'delete',
-			// 	url: '/memo/delete',
-			// 	data: {
-			// 		id
-			// 	}
-			// })
-			// .then(function() {
-			// 	console.log('삭제됨');
-			// 	vm.fetchList();
-			// })
-			// .catch(function(err) {
-			// 	console.log(err);
-			// })
-		}
-	},
-	async created() {
-		try {
-			const {data} = await FETCH_MEMO('post', '/memo/fetch');
-			this.rowData = data.rows;
-			this.isLoading = false;
-
-			console.log('[created] fetch memo : ',this.rowData);
-		}catch(err) {
-			console.log(err);
-		}
+	created() {
+		this.fetchList();
 		Bus.$on('onFetch', this.fetchList);
 		
 	},
@@ -155,6 +117,33 @@ export default {
 		})
 		// dragula([document.getElementById(container)]);
 	},
+	methods: {
+		async fetchList() {
+			try {
+				const {data} = await FETCH_MEMO('post', '/memo/fetch');
+				this.rowData = data.rows;
+				this.isLoading = false;
+
+				console.log('[created] fetch memo : ',this.rowData);
+			}catch(err) {
+				console.log(err);
+			}
+		},
+		deleteList(id) {
+			console.log(id);
+
+			if(!window.confirm('해당 리스트를 삭제하시겠습니까?')) return;
+
+			try {
+				DELETE_MEMO('delete', `/memo/delete/${id}`).then(() => {
+					this.fetchList();
+				})
+
+			}catch(err) {
+				console.log('', err);
+			}
+		}
+	}
 
 
 }
