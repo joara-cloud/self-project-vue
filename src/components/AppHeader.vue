@@ -1,5 +1,13 @@
 <template>
 	<header id="header">
+		<div class="h_upper">
+			<nav>
+				<a href="">Mac</a>
+				<a href="">iPad</a>
+				<a href="">iPhone</a>
+				<a href="">Watch</a>
+			</nav>
+		</div>
 		<div class="h_content">
 			<!-- <h1><a href="/"><img alt="Vue logo" src="@/assets/logo.png"></a></h1> -->
 			<h1><router-link to="/">ra</router-link></h1>
@@ -20,8 +28,11 @@ export default {
 </script>
 
 <style>
-#header {position:fixed;left:0;right:0;top:0;z-index:10;padding:0 50px;/*background-color:#fff*/}
-#header .h_content {display:flex;padding:54px 0;justify-content:space-between;align-items:center}
+#header {position:fixed;left:0;right:0;top:0;z-index:10;/*background-color:#fff*/}
+#header .h_upper {background-color:#303030;}
+#header .h_upper nav {margin:0 50px;text-align:center;}
+#header .h_upper nav a {display:inline-block;margin:0 50px 0 0;padding:14px 0;font-size:14px;color:#fff}
+#header .h_content {display:flex;padding:54px 50px;justify-content:space-between;align-items:center}
 #header .h_content h1 {display:block;width:45px;height:45px;border:2px solid #797979;border-radius:4px;text-align:center;font-weight:900;font-size:22px}
 #header .h_content h1 a {display:block;line-height:45px;color:#202020;/*background-color:#fff*/}
 #header .h_content h1 img {width:100%}
