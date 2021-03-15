@@ -1,6 +1,5 @@
 <template>
 	<div class="memo_list_wrap">
-		{{this.$store.state.testData}}
 		<div class="memo_section">
 			<h3>Doing</h3>
 			{{memoPosts}}
@@ -86,6 +85,9 @@ export default {
 					// if(!prevList && nextList) targetList.pos = nextList.pos / 2; // 첫 번째 자리
 					// else if(!nextList && prevList) targetList.pos = prevList.pos * 2; //마지막 자리
 					// else targetList.pos = (nextList.pos + prevList.pos) / 2; //중간 자리
+
+					console.log('prevList : ', prevList);
+					console.log('nextList : ', nextList);
 
 					if(!prevList && nextList) {
 						targetList.pos = nextList.pos / 2; // 첫 번째 자리
