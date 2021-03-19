@@ -16,7 +16,6 @@
 				<li class="list_item" v-for="row in rowData" v-bind:key="row.idx">
 					<div :data-idx="row.idx" :data-pos="row.pos">
 						<input type="text" :value="row.subject" readonly>
-						{{row.idx}}
 						<button type="button" class="memo_delete" @click="deleteList(row.idx)">&times;</button>
 					</div>
 				</li>

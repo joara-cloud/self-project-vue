@@ -46,6 +46,7 @@ export default {
 		Dim
 	},
 	async created() {
+		console.log(`/posts/${this.postIndex}`);
 		try {
 			const {data} = await FETCH_POST('get', `/posts/${this.postIndex}`);
 			const post = data.posts[0];

@@ -30,9 +30,7 @@
 		<div class="pagination_wrap pagination">
 			<a :href="`?page=${prevPaging}&listNum=${listNum}`" class="crumb crumb__prev" @click="prevPage">Previous</a>
 			<ul class="pagination crumbs">
-				<li 
-				v-for="(i, page) in new Array(pagination)" 
-				:key="i" :class="[currentPage == page+1 ? 'active' : '', 'customclass']">
+				<li v-for="(i, page) in new Array(pagination)" :key="i" :class="[currentPage == page+1 ? 'active' : '', 'customclass']">
 					<a :href="`?page=${page+1}&listNum=${listNum}`" class="crumb">{{page+1}}</a>
 				</li>
 			</ul>
@@ -101,7 +99,9 @@ export default {
 			try {
 				// 전체 데이터 개수
 				const response = await FETCH_POSTS('post', '/posts/list'); 
-				this.totalList = response.data.posts.length;
+				this.totalList = response.data.posts[0].cnt;
+
+				console.log(response.data.posts[0].cnt);
 
 				// 뿌려질 데이터
 				const fetchData = {
